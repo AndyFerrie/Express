@@ -5,9 +5,12 @@ const app = express();
 
 const PORT = 3000;
 
+//Using the public folder at the root of the project
+app.use(express.static("public"));
+
 //GET
 app.get("/", (request, response) => {
-    response.send("This is a GET request at /")
+    response.json(data);
 });
 
 //POST
