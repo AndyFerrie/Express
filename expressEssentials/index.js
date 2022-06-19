@@ -8,9 +8,20 @@ const PORT = 3000;
 //Using the public folder at the root of the project
 app.use(express.static("public"));
 
+//Using the images folder at the route /images
+app.use("/images", express.static("images"));
+
 //GET
 app.get("/", (request, response) => {
     response.json(data);
+});
+
+//GET with Routing Parameters
+app.get("/class/:id", (request, response) => {
+    const studentId = Number(request.params.id);
+
+    const student = data.filter((student) => student.id === studentId);
+    response.send(student);
 });
 
 //POST
@@ -30,5 +41,4 @@ app.delete("/delete", (request, response) => {
 
 app.listen(PORT, () => {
     console.log(`The server is running on port ${PORT}`);
-    console.log(data);
 });
