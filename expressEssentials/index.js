@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import data from "./data/mock.json" assert { type: "json" }
 
 const app = express();
@@ -11,9 +11,19 @@ app.use(express.static("public"));
 //Using the images folder at the route /images
 app.use("/images", express.static("images"));
 
+//Using express.json and express.urlencoded
+// app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
+
 //GET
 app.get("/", (request, response) => {
     response.json(data);
+});
+
+//POST - express.json and express.urlencoded
+app.post("/item", (request, response) => {
+    console.log(request.body);
+    response.send(request.body);
 });
 
 //GET - download method
@@ -29,7 +39,8 @@ app.get("/redirect", (request, response) => {
 app
     .route("/class")
     .get((request, response) => {
-        response.send("Retrieve class info");
+        // response.send("Retrieve class info");
+        throw new Error();
     })
     .post((request, response) => {
         response.send("Create class info");
@@ -50,25 +61,32 @@ app.get("/next", (request, response, next) => {
 
 //GET with Routing Parameters
 app.get("/class/:id", (request, response) => {
+    //Middleware: Access the routing parameters
     const studentId = Number(request.params.id);
 
     const student = data.filter((student) => student.id === studentId);
+    //Everything above this line is middleware
     response.send(student);
 });
 
 //POST
 app.post("/create", (request, response) => {
-    response.send("This is a POST request at /create")
+    response.send("This is a POST request at /create");
 });
 
 //PUT
 app.put("/edit", (request, response) => {
-    response.send("This is a PUT request at /edit")
+    response.send("This is a PUT request at /edit");
 });
 
 //DELETE
 app.delete("/delete", (request, response) => {
-    response.send("This is a DELETE request at /delete")
+    response.send("This is a DELETE request at /delete");
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send("Something in broken!");
 });
 
 app.listen(PORT, () => {
